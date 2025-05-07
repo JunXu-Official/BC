@@ -182,19 +182,49 @@ def generate_expert_data(num_episodes=100):
     return expert_data
 
 expert_data = generate_expert_data(500)  # 生成500局
+print('初始化生成的专家数据为：', len(expert_data))
 
-#将字符用数字替代： 'X'-> 1   'O' -> -1  '-' -> 0
+#将字符替换成数字
 for i in range(len(expert_data)):
-    for j in range(3):
+    for j in range(len(expert_data[i][0])):
         for k in range(3):
-            if expert_data[i][0][j][k] == 'O':
-                expert_data[i][0][j][k] = -1
+            if expert_data[i][0][j][k] == '-':
+                expert_data[i][0][j][k] = 0
             elif expert_data[i][0][j][k] == 'X':
                 expert_data[i][0][j][k] = 1
-            else:
-                expert_data[i][0][j][k] = 0
+            elif expert_data[i][0][j][k] == 'O':
+                expert_data[i][0][j][k] = -1
 
-#将专家数据写入json
+#将专家数据保存到json
 expert_data_json = json.dumps(expert_data)
 with open('expert_data.json', 'w', encoding='utf-8') as f:
     f.write(expert_data_json)
+
+
+# def encode_state(state):
+#     mapping = {'X': 1, 'O': -1, '-': 0}
+#     return np.array([[mapping[cell] for cell in row] for row in state], dtype=np.float32)
+#
+# # 将原始数据转换为 expert_data 格式
+# def convert_raw_to_expert(raw_data):
+#     expert_data = []
+#     for state, action in raw_data:
+#         encoded_state = encode_state(state)  # 转成 NumPy 数组
+#         expert_data.append((encoded_state, action))
+#     return expert_data
+#
+# # 你原来的 data_process 函数
+# def data_process(data):
+#     states = []
+#     actions = []
+#     for state, action in data:
+#         flat_state = state.flatten()
+#         action_index = action[0] * 3 + action[1]
+#         states.append(flat_state)
+#         actions.append(action_index)
+#     return torch.tensor(states, dtype=torch.float32), torch.tensor(actions, dtype=torch.long)
+#
+# # 使用处理
+# expert_data = convert_raw_to_expert(expert_data)
+# states_tensor, actions_tensor = data_process(expert_data)
+# print(states_tensor)
