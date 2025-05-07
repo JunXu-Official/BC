@@ -19,6 +19,7 @@ with open('expert_data.json', 'r', encoding='utf-8') as f:
 
 print(expert_data[0], len(expert_data))
 
+#处理数据，分为state和action
 print('-' * 40)
 for i in range(len(expert_data)):
     for state, action in expert_data[i]:
