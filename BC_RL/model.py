@@ -44,12 +44,12 @@ def clone_actor(actor_model, dataloader, num_epoches):
 
 #critic网络行为克隆
 def clone_critic(critic_model, dataloader, num_epoches):
-    optim_critic = torch.optim.Adam(critic_model.parameters(), lr=1e-3)
+    optim_critic = torch.optim.Adam(critic_model.parameters(), lr=3e-4)
     criterion_critic = nn.MSELoss()
     for epoch in range(num_epoches):
         for state_batch, reward_batch in dataloader:
-            critic_output = critic_model(state_batch)
-            loss = criterion_critic(critic_output, reward_batch)
+            critic_output = critic_model(state_batch.to(device))
+            loss = criterion_critic(critic_output, reward_batch.to(device))
             optim_critic.zero_grad()
             loss.backward()
             optim_critic.step()
@@ -66,8 +66,8 @@ if __name__ == '__main__':
     actor = Actor(obs_dim=4, act_dim=2).to(device)
     critic = Critic(obs_dim=4)
     #训练轮数
-    num_epoches = 1000
-    bc_mode = "actor"
+    num_epoches = 200
+    bc_mode = "critic"
     if bc_mode == "actor":
         clone_actor(actor_model=actor, dataloader=data_actor, num_epoches=num_epoches)
         torch.save(actor.state_dict(), 'clone_actor.pt')
