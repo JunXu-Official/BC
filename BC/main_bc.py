@@ -60,5 +60,34 @@ for epoch in range(num_epoches):
 
 #测试
 
+def test_model(board, model):
 
+    empty_positions = [(i, j) for i in range(3) for j in range(3) if board[i][j] == 0]
+    # 如果没有空位置则直接返回
+    if not empty_positions:
+        return None
 
+    # 将状态展平成张量
+    state_tensor = torch.tensor(board.flatten(), dtype=torch.float32).unsqueeze(0)
+    model.eval()
+    with torch.no_grad():
+        # 获取每个位置的预测分数
+        action_logits = model(state_tensor).squeeze()
+
+        # 将已经落子的位置分数设置为负无穷大
+        for row in range(3):
+            for col in range(3):
+                if board[row][col] != 0:  # 非空位置
+                    action_logits[row * 3 + col] = float('-inf')
+
+        # 选择分数最高的空位
+        action_index = torch.argmax(action_logits).item()
+        row, col = action_index // 3, action_index % 3
+        return (row, col)
+
+test_state = np.array([[-1, 0, 1],
+                       [1, -1, 0],
+                       [1, 1, -1]])
+
+predict_action = test_model(test_state, model)
+print("测试结果是：", predict_action)
