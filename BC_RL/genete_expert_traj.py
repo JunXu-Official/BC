@@ -54,5 +54,7 @@ def get_dataloader(expert_data):
 
 
 if __name__ == '__main__':
-    expert_data = collect_expert_data(num_steps=5000)
+    expert_data = collect_expert_data(num_steps=10)
+    print(expert_data)
+
     data, data1 = get_dataloader(expert_data)

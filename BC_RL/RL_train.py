@@ -17,5 +17,5 @@ model.policy.mlp_extractor.policy_net.load_state_dict(actor_dict, strict=False)
 model.policy.mlp_extractor.value_net.load_state_dict(critic_dict, strict=False)
 
 # 4. 继续 PPO 微调
-model.learn(total_timesteps=10000)
+model.learn(total_timesteps=1000000)
 model.save("model.pt")
